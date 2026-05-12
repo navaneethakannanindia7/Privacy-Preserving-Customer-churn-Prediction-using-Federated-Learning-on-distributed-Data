@@ -5,68 +5,60 @@ import {
   Pie,
   Cell,
   ResponsiveContainer,
-  Legend,
-  Tooltip,
 } from "recharts";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 
 const data = [
   { name: "Retained", value: 5174, percentage: 73.5 },
   { name: "Churned", value: 1869, percentage: 26.5 },
 ];
 
-const COLORS = ["#22c55e", "#ef4444"];
+const COLORS = ["#22c55e", "#f59e0b"];
 
 export function ChurnDistributionChart() {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Churn Distribution</CardTitle>
-        <CardDescription>Customer retention vs churn ratio in dataset</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="h-[280px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={data}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={90}
-                paddingAngle={2}
-                dataKey="value"
-                label={({ name, percentage }) => `${name}: ${percentage}%`}
-                labelLine={false}
-              >
-                {data.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index]}
-                    stroke="none"
-                  />
-                ))}
-              </Pie>
-              <Tooltip
-                formatter={(value: number) => [value.toLocaleString(), "Customers"]}
-                contentStyle={{
-                  backgroundColor: "#fff",
-                  border: "1px solid #e4e4e7",
-                  borderRadius: "6px",
-                  fontSize: "13px",
-                }}
-              />
-              <Legend
-                verticalAlign="bottom"
-                height={36}
-                formatter={(value) => (
-                  <span style={{ color: "#71717a", fontSize: "13px" }}>{value}</span>
-                )}
-              />
-            </PieChart>
-          </ResponsiveContainer>
+    <div className="bg-[#141414] border border-[#262626] rounded-xl p-5">
+      <div className="mb-4">
+        <h3 className="text-sm font-medium text-[#fafafa]">Churn Distribution</h3>
+        <p className="text-xs text-[#71717a] mt-1">Customer retention ratio</p>
+      </div>
+      
+      <div className="h-[200px] relative">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              innerRadius={55}
+              outerRadius={80}
+              paddingAngle={3}
+              dataKey="value"
+              stroke="none"
+            >
+              {data.map((_, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index]} />
+              ))}
+            </Pie>
+          </PieChart>
+        </ResponsiveContainer>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-2xl font-semibold text-[#fafafa]">7,043</p>
+            <p className="text-xs text-[#71717a]">Total</p>
+          </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+      
+      <div className="flex justify-center gap-6 mt-4">
+        <div className="flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-sm bg-[#22c55e]" />
+          <span className="text-xs text-[#71717a]">Retained (73.5%)</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-sm bg-[#f59e0b]" />
+          <span className="text-xs text-[#71717a]">Churned (26.5%)</span>
+        </div>
+      </div>
+    </div>
   );
 }

@@ -1,126 +1,84 @@
 "use client";
 
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-
 interface ConfusionMatrixProps {
   title: string;
-  description: string;
+  subtitle: string;
   matrix: {
-    trueNeg: number;
-    falsePos: number;
-    falseNeg: number;
-    truePos: number;
+    tn: number;
+    fp: number;
+    fn: number;
+    tp: number;
   };
-  colorScheme: "blue" | "orange";
+  variant: "blue" | "green";
 }
 
 export function ConfusionMatrix({
   title,
-  description,
+  subtitle,
   matrix,
-  colorScheme,
+  variant,
 }: ConfusionMatrixProps) {
-  const colors = {
-    blue: {
-      high: "bg-blue-500",
-      medium: "bg-blue-300",
-      low: "bg-blue-100",
-    },
-    orange: {
-      high: "bg-orange-500",
-      medium: "bg-orange-300",
-      low: "bg-orange-100",
-    },
+  const maxVal = Math.max(matrix.tn, matrix.fp, matrix.fn, matrix.tp);
+  
+  const getOpacity = (value: number) => {
+    const ratio = value / maxVal;
+    return Math.max(0.2, ratio);
   };
 
-  const getColor = (value: number, max: number) => {
-    const ratio = value / max;
-    if (ratio > 0.6) return colors[colorScheme].high;
-    if (ratio > 0.3) return colors[colorScheme].medium;
-    return colors[colorScheme].low;
-  };
-
-  const maxVal = Math.max(
-    matrix.trueNeg,
-    matrix.falsePos,
-    matrix.falseNeg,
-    matrix.truePos
-  );
+  const baseColor = variant === "blue" ? "59, 130, 246" : "34, 197, 94";
+  
+  const accuracy = ((matrix.tn + matrix.tp) / (matrix.tn + matrix.fp + matrix.fn + matrix.tp) * 100).toFixed(1);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-col items-center">
-          <div className="mb-3">
-            <p className="text-xs text-[#71717a] text-center">Predicted</p>
-          </div>
-          <div className="flex">
-            <div className="flex flex-col justify-center mr-3">
-              <p
-                className="text-xs text-[#71717a] transform -rotate-90 whitespace-nowrap"
-                style={{ transformOrigin: "center" }}
-              >
-                Actual
-              </p>
+    <div className="bg-[#141414] border border-[#262626] rounded-xl p-5">
+      <div className="mb-4">
+        <h3 className="text-sm font-medium text-[#fafafa]">{title}</h3>
+        <p className="text-xs text-[#71717a] mt-1">{subtitle}</p>
+      </div>
+      
+      <div className="flex flex-col items-center">
+        <div className="text-xs text-[#71717a] mb-2">Predicted</div>
+        <div className="flex items-center gap-2">
+          <div className="text-xs text-[#71717a] -rotate-90 w-4">Actual</div>
+          <div className="grid grid-cols-2 gap-1.5">
+            <div className="col-span-2 grid grid-cols-2 gap-1.5 text-[10px] text-[#71717a] text-center mb-1">
+              <span>No Churn</span>
+              <span>Churn</span>
             </div>
-            <div className="grid grid-cols-2 gap-1">
-              <div className="text-center text-xs text-[#71717a] pb-1"></div>
-              <div className="text-center text-xs text-[#71717a] pb-1 col-span-2 grid grid-cols-2 gap-1">
-                <span>No Churn</span>
-                <span>Churn</span>
-              </div>
-              <div
-                className={`w-20 h-16 ${getColor(
-                  matrix.trueNeg,
-                  maxVal
-                )} rounded flex items-center justify-center`}
-              >
-                <span className="text-sm font-semibold text-white">
-                  {matrix.trueNeg}
-                </span>
-              </div>
-              <div
-                className={`w-20 h-16 ${getColor(
-                  matrix.falsePos,
-                  maxVal
-                )} rounded flex items-center justify-center`}
-              >
-                <span className="text-sm font-semibold text-white">
-                  {matrix.falsePos}
-                </span>
-              </div>
-              <div
-                className={`w-20 h-16 ${getColor(
-                  matrix.falseNeg,
-                  maxVal
-                )} rounded flex items-center justify-center`}
-              >
-                <span className="text-sm font-semibold text-white">
-                  {matrix.falseNeg}
-                </span>
-              </div>
-              <div
-                className={`w-20 h-16 ${getColor(
-                  matrix.truePos,
-                  maxVal
-                )} rounded flex items-center justify-center`}
-              >
-                <span className="text-sm font-semibold text-white">
-                  {matrix.truePos}
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="mt-3 flex gap-4 text-xs text-[#71717a]">
-            <span>TN: True Negative</span>
-            <span>TP: True Positive</span>
+            <Cell value={matrix.tn} label="TN" opacity={getOpacity(matrix.tn)} color={baseColor} />
+            <Cell value={matrix.fp} label="FP" opacity={getOpacity(matrix.fp)} color={baseColor} />
+            <Cell value={matrix.fn} label="FN" opacity={getOpacity(matrix.fn)} color={baseColor} />
+            <Cell value={matrix.tp} label="TP" opacity={getOpacity(matrix.tp)} color={baseColor} />
           </div>
         </div>
-      </CardContent>
-    </Card>
+        
+        <div className="mt-4 text-center">
+          <span className="text-xs text-[#71717a]">Accuracy: </span>
+          <span className="text-sm font-medium text-[#fafafa]">{accuracy}%</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Cell({ 
+  value, 
+  label, 
+  opacity, 
+  color 
+}: { 
+  value: number; 
+  label: string; 
+  opacity: number; 
+  color: string;
+}) {
+  return (
+    <div 
+      className="w-20 h-14 rounded-lg flex flex-col items-center justify-center"
+      style={{ backgroundColor: `rgba(${color}, ${opacity})` }}
+    >
+      <span className="text-sm font-semibold text-white">{value}</span>
+      <span className="text-[10px] text-white/70">{label}</span>
+    </div>
   );
 }

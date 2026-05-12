@@ -1,64 +1,49 @@
 "use client";
 
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-
-const data = [
-  { client: "Client 1", samples: 1878 },
-  { client: "Client 2", samples: 1878 },
-  { client: "Client 3", samples: 1878 },
+const clients = [
+  { id: 1, samples: 1878, churnRate: 26.4 },
+  { id: 2, samples: 1878, churnRate: 26.7 },
+  { id: 3, samples: 1878, churnRate: 26.3 },
 ];
 
 export function ClientDistributionChart() {
+  const maxSamples = Math.max(...clients.map(c => c.samples));
+  
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Data Distribution</CardTitle>
-        <CardDescription>Training samples per federated client</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="h-[200px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" vertical={false} />
-              <XAxis
-                dataKey="client"
-                tick={{ fill: "#71717a", fontSize: 12 }}
-                tickLine={false}
-                axisLine={{ stroke: "#e4e4e7" }}
+    <div className="bg-[#141414] border border-[#262626] rounded-xl p-5">
+      <div className="mb-4">
+        <h3 className="text-sm font-medium text-[#fafafa]">Client Distribution</h3>
+        <p className="text-xs text-[#71717a] mt-1">Training data per node</p>
+      </div>
+      
+      <div className="space-y-4 mt-6">
+        {clients.map((client) => (
+          <div key={client.id}>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-medium text-[#a1a1aa]">Client {client.id}</span>
+              <span className="text-xs text-[#71717a]">{client.samples.toLocaleString()} samples</span>
+            </div>
+            <div className="h-2 bg-[#1a1a1a] rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-[#22c55e] rounded-full transition-all duration-500"
+                style={{ width: `${(client.samples / maxSamples) * 100}%` }}
               />
-              <YAxis
-                tick={{ fill: "#71717a", fontSize: 12 }}
-                tickLine={false}
-                axisLine={{ stroke: "#e4e4e7" }}
-              />
-              <Tooltip
-                formatter={(value: number) => [value.toLocaleString(), "Samples"]}
-                contentStyle={{
-                  backgroundColor: "#fff",
-                  border: "1px solid #e4e4e7",
-                  borderRadius: "6px",
-                  fontSize: "13px",
-                }}
-              />
-              <Bar
-                dataKey="samples"
-                fill="#10b981"
-                radius={[4, 4, 0, 0]}
-                maxBarSize={60}
-              />
-            </BarChart>
-          </ResponsiveContainer>
+            </div>
+            <p className="text-[10px] text-[#71717a] mt-1">Churn rate: {client.churnRate}%</p>
+          </div>
+        ))}
+      </div>
+      
+      <div className="mt-6 pt-4 border-t border-[#262626]">
+        <div className="flex justify-between text-xs">
+          <span className="text-[#71717a]">Total training samples</span>
+          <span className="text-[#fafafa] font-medium">5,634</span>
         </div>
-      </CardContent>
-    </Card>
+        <div className="flex justify-between text-xs mt-1">
+          <span className="text-[#71717a]">Test samples</span>
+          <span className="text-[#fafafa] font-medium">1,409</span>
+        </div>
+      </div>
+    </div>
   );
 }
