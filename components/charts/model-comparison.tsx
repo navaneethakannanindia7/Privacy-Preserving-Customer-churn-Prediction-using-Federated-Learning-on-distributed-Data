@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   BarChart,
   Bar,
@@ -23,6 +24,9 @@ const COLORS = {
 };
 
 export function ModelComparisonChart() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   return (
     <div className="bg-[#141414] border border-[#262626] rounded-xl p-5">
       <div className="flex items-center justify-between mb-5">
@@ -41,8 +45,9 @@ export function ModelComparisonChart() {
           </div>
         </div>
       </div>
-      <div className="h-[260px]">
-        <ResponsiveContainer width="100%" height="100%">
+      <div style={{ width: "100%", height: 260, minHeight: 260 }}>
+        {mounted && (
+          <ResponsiveContainer width="100%" height={260}>
           <BarChart data={data} barGap={2} barCategoryGap="20%">
             <XAxis
               dataKey="metric"
@@ -86,6 +91,7 @@ export function ModelComparisonChart() {
             </Bar>
           </BarChart>
         </ResponsiveContainer>
+        )}
       </div>
     </div>
   );

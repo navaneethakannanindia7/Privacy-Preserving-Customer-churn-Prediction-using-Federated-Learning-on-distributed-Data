@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   BarChart,
   Bar,
@@ -22,6 +23,9 @@ const data = [
 ];
 
 export function FeatureImportanceChart() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   return (
     <div className="bg-[#141414] border border-[#262626] rounded-xl p-5">
       <div className="mb-4">
@@ -29,8 +33,9 @@ export function FeatureImportanceChart() {
         <p className="text-xs text-[#71717a] mt-1">Top predictive features</p>
       </div>
       
-      <div className="h-[280px]">
-        <ResponsiveContainer width="100%" height="100%">
+      <div style={{ width: "100%", height: 280, minHeight: 280 }}>
+        {mounted && (
+          <ResponsiveContainer width="100%" height={280}>
           <BarChart data={data} layout="vertical" margin={{ left: 0, right: 10 }}>
             <XAxis
               type="number"
@@ -71,6 +76,7 @@ export function FeatureImportanceChart() {
             </Bar>
           </BarChart>
         </ResponsiveContainer>
+        )}
       </div>
     </div>
   );

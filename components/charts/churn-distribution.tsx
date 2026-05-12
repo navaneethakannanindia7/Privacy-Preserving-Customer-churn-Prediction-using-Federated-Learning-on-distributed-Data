@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   PieChart,
   Pie,
@@ -15,6 +16,9 @@ const data = [
 const COLORS = ["#22c55e", "#f59e0b"];
 
 export function ChurnDistributionChart() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   return (
     <div className="bg-[#141414] border border-[#262626] rounded-xl p-5">
       <div className="mb-4">
@@ -22,8 +26,9 @@ export function ChurnDistributionChart() {
         <p className="text-xs text-[#71717a] mt-1">Customer retention ratio</p>
       </div>
       
-      <div className="h-[200px] relative">
-        <ResponsiveContainer width="100%" height="100%">
+      <div style={{ width: "100%", height: 200, minHeight: 200 }} className="relative">
+        {mounted && (
+          <ResponsiveContainer width="100%" height={200}>
           <PieChart>
             <Pie
               data={data}
@@ -41,7 +46,8 @@ export function ChurnDistributionChart() {
             </Pie>
           </PieChart>
         </ResponsiveContainer>
-        <div className="absolute inset-0 flex items-center justify-center">
+        )}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="text-center">
             <p className="text-2xl font-semibold text-[#fafafa]">7,043</p>
             <p className="text-xs text-[#71717a]">Total</p>
