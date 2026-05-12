@@ -7,41 +7,33 @@ const clients = [
 ];
 
 export function ClientDistributionChart() {
-  const maxSamples = Math.max(...clients.map(c => c.samples));
-  
   return (
-    <div className="bg-[#141414] border border-[#262626] rounded-xl p-5">
-      <div className="mb-4">
-        <h3 className="text-sm font-medium text-[#fafafa]">Client Distribution</h3>
-        <p className="text-xs text-[#71717a] mt-1">Training data per node</p>
-      </div>
+    <div className="bg-[#141414] rounded-lg p-5 border border-[#1a1a1a]">
+      <h3 className="text-sm font-medium text-[#e5e5e5] mb-4">Client Distribution</h3>
       
-      <div className="space-y-4 mt-6">
+      <div className="space-y-4">
         {clients.map((client) => (
           <div key={client.id}>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-medium text-[#a1a1aa]">Client {client.id}</span>
-              <span className="text-xs text-[#71717a]">{client.samples.toLocaleString()} samples</span>
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-xs text-[#888]">Client {client.id}</span>
+              <span className="text-xs text-[#666]">{client.samples.toLocaleString()}</span>
             </div>
-            <div className="h-2 bg-[#1a1a1a] rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-[#22c55e] rounded-full transition-all duration-500"
-                style={{ width: `${(client.samples / maxSamples) * 100}%` }}
-              />
+            <div className="h-1.5 bg-[#1a1a1a] rounded-full overflow-hidden">
+              <div className="h-full bg-[#22c55e] rounded-full" style={{ width: "100%" }} />
             </div>
-            <p className="text-[10px] text-[#71717a] mt-1">Churn rate: {client.churnRate}%</p>
+            <p className="text-[10px] text-[#555] mt-1">Churn: {client.churnRate}%</p>
           </div>
         ))}
       </div>
       
-      <div className="mt-6 pt-4 border-t border-[#262626]">
+      <div className="mt-5 pt-4 border-t border-[#1a1a1a] space-y-1.5">
         <div className="flex justify-between text-xs">
-          <span className="text-[#71717a]">Total training samples</span>
-          <span className="text-[#fafafa] font-medium">5,634</span>
+          <span className="text-[#666]">Train samples</span>
+          <span className="text-[#888]">5,634</span>
         </div>
-        <div className="flex justify-between text-xs mt-1">
-          <span className="text-[#71717a]">Test samples</span>
-          <span className="text-[#fafafa] font-medium">1,409</span>
+        <div className="flex justify-between text-xs">
+          <span className="text-[#666]">Test samples</span>
+          <span className="text-[#888]">1,409</span>
         </div>
       </div>
     </div>

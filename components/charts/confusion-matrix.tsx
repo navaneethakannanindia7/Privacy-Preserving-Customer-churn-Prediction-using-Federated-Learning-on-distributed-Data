@@ -12,73 +12,56 @@ interface ConfusionMatrixProps {
   variant: "blue" | "green";
 }
 
-export function ConfusionMatrix({
-  title,
-  subtitle,
-  matrix,
-  variant,
-}: ConfusionMatrixProps) {
+export function ConfusionMatrix({ title, subtitle, matrix, variant }: ConfusionMatrixProps) {
+  const total = matrix.tn + matrix.fp + matrix.fn + matrix.tp;
+  const accuracy = ((matrix.tn + matrix.tp) / total * 100).toFixed(1);
   const maxVal = Math.max(matrix.tn, matrix.fp, matrix.fn, matrix.tp);
   
-  const getOpacity = (value: number) => {
-    const ratio = value / maxVal;
-    return Math.max(0.2, ratio);
-  };
-
-  const baseColor = variant === "blue" ? "59, 130, 246" : "34, 197, 94";
-  
-  const accuracy = ((matrix.tn + matrix.tp) / (matrix.tn + matrix.fp + matrix.fn + matrix.tp) * 100).toFixed(1);
+  const getOpacity = (value: number) => Math.max(0.15, value / maxVal * 0.7);
+  const color = variant === "blue" ? "59, 130, 246" : "34, 197, 94";
 
   return (
-    <div className="bg-[#141414] border border-[#262626] rounded-xl p-5">
+    <div className="bg-[#141414] rounded-lg p-5 border border-[#1a1a1a]">
       <div className="mb-4">
-        <h3 className="text-sm font-medium text-[#fafafa]">{title}</h3>
-        <p className="text-xs text-[#71717a] mt-1">{subtitle}</p>
+        <h3 className="text-sm font-medium text-[#e5e5e5]">{title}</h3>
+        <p className="text-xs text-[#666] mt-0.5">{subtitle}</p>
       </div>
       
       <div className="flex flex-col items-center">
-        <div className="text-xs text-[#71717a] mb-2">Predicted</div>
-        <div className="flex items-center gap-2">
-          <div className="text-xs text-[#71717a] -rotate-90 w-4">Actual</div>
-          <div className="grid grid-cols-2 gap-1.5">
-            <div className="col-span-2 grid grid-cols-2 gap-1.5 text-[10px] text-[#71717a] text-center mb-1">
-              <span>No Churn</span>
-              <span>Churn</span>
+        <div className="text-[10px] text-[#666] mb-2 uppercase tracking-wide">Predicted</div>
+        <div className="flex items-center gap-3">
+          <div className="text-[10px] text-[#666] uppercase tracking-wide -rotate-90 origin-center">Actual</div>
+          <div>
+            <div className="grid grid-cols-2 gap-1 text-[10px] text-[#666] text-center mb-1">
+              <span>No</span>
+              <span>Yes</span>
             </div>
-            <Cell value={matrix.tn} label="TN" opacity={getOpacity(matrix.tn)} color={baseColor} />
-            <Cell value={matrix.fp} label="FP" opacity={getOpacity(matrix.fp)} color={baseColor} />
-            <Cell value={matrix.fn} label="FN" opacity={getOpacity(matrix.fn)} color={baseColor} />
-            <Cell value={matrix.tp} label="TP" opacity={getOpacity(matrix.tp)} color={baseColor} />
+            <div className="grid grid-cols-2 gap-1">
+              <Cell value={matrix.tn} label="TN" opacity={getOpacity(matrix.tn)} color={color} />
+              <Cell value={matrix.fp} label="FP" opacity={getOpacity(matrix.fp)} color={color} />
+              <Cell value={matrix.fn} label="FN" opacity={getOpacity(matrix.fn)} color={color} />
+              <Cell value={matrix.tp} label="TP" opacity={getOpacity(matrix.tp)} color={color} />
+            </div>
           </div>
         </div>
         
         <div className="mt-4 text-center">
-          <span className="text-xs text-[#71717a]">Accuracy: </span>
-          <span className="text-sm font-medium text-[#fafafa]">{accuracy}%</span>
+          <span className="text-xs text-[#666]">Acc: </span>
+          <span className="text-sm font-medium text-[#e5e5e5]">{accuracy}%</span>
         </div>
       </div>
     </div>
   );
 }
 
-function Cell({ 
-  value, 
-  label, 
-  opacity, 
-  color 
-}: { 
-  value: number; 
-  label: string; 
-  opacity: number; 
-  color: string;
-}) {
+function Cell({ value, label, opacity, color }: { value: number; label: string; opacity: number; color: string }) {
   return (
     <div 
-      className="w-20 h-14 rounded-lg flex flex-col items-center justify-center"
+      className="w-16 h-12 rounded flex flex-col items-center justify-center"
       style={{ backgroundColor: `rgba(${color}, ${opacity})` }}
     >
-      <span className="text-sm font-semibold text-white">{value}</span>
-      <span className="text-[10px] text-white/70">{label}</span>
+      <span className="text-sm font-medium text-white">{value}</span>
+      <span className="text-[9px] text-white/60">{label}</span>
     </div>
   );
 }
